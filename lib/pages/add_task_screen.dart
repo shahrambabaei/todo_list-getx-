@@ -10,7 +10,7 @@ class AddTaskScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.put(AddTaskController());
+    var controller = Get.find<AddTaskController>();
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -20,21 +20,20 @@ class AddTaskScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                       child: Padding(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10),
                     child: Text(
-                      "Newtask",
-                      // controller.IsSelected.value ? "EditTask" : "Newtask",
+                      controller.isEditing.value ? "EditTask" : "Newtask",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
                   )),
                   IconButton(
                       onPressed: () {
                         Get.back();
                       },
-                      icon: Icon(Icons.close))
+                      icon: const Icon(Icons.close))
                 ],
               ),
               const Text("What arre you planing?"),
@@ -67,15 +66,25 @@ class AddTaskScreen extends StatelessWidget {
                     style: TextButton.styleFrom(
                         elevation: 0, backgroundColor: kLightBlueColor),
                     onPressed: () {
-                      Get.find<HomeScreenController>().taskList.add(TaskModel(
-                          titleTask: controller.taskController!.text,
-                          subtitleTask: controller.taskController!.text,
-                          status: false));
+                      if (controller.isEditing.value) {
+                        var task = Get.find<HomeScreenController>()
+                            .taskList[Get.find<HomeScreenController>().index];
+                        task.titleTask = controller.taskController!.text;
+                        task.subtitleTask = controller.taskController!.text;
+                        Get.find<HomeScreenController>().taskList[
+                            Get.find<HomeScreenController>().index] = task;
+                      } else {
+                        Get.find<HomeScreenController>().taskList.add(TaskModel(
+                            titleTask: controller.taskController!.text,
+                            subtitleTask: controller.taskController!.text,
+                            status: false));
+                      }
+
                       Get.back();
                     },
-                    child: const Text(
-                      "Add",
-                      style: TextStyle(
+                    child: Text(
+                      controller.isEditing.value ? "Edit" : "Add",
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
@@ -86,6 +95,6 @@ class AddTaskScreen extends StatelessWidget {
         ),
       ),
     );
-    ;
+    
   }
 }

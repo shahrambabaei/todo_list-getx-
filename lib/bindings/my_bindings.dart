@@ -8,6 +8,7 @@ class MyBindings extends Bindings {
     Get.lazyPut(() {
       HomeScreenController();
     });
+
     Get.put((AddTaskController()));
   }
 }
